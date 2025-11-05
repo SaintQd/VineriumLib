@@ -1,0 +1,11 @@
+name: VineriumLib
+version: '1.0'
+author: SaintQd
+main: org.saintqd.vineriumlib.VineriumLib
+description: VineriumLib Plugin
+api-version: '1.21.4'
+dependencies:
+  server:
+    Vault:
+      load: BEFORE
+      required: false

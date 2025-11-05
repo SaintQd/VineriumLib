@@ -1,0 +1,6 @@
+name: VineriumLib
+version: 1.0
+author: SaintQd
+main: org.saintqd.vineriumlib.VineriumLib
+api-version: 1.21.4
+softdepend: [Vault]
