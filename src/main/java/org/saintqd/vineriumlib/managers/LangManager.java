@@ -25,9 +25,9 @@ public class LangManager {
         return langLinesPerPlugin.getOrDefault(plugin,new HashMap<>());
     }
 
-    public HashMap<String,String> loadLanguageFile(Plugin plugin, String path) {
+    public HashMap<String,String> loadLanguageFile(String path) {
         HashMap<String,String> langLines = new HashMap<>();
-        File langFile = new File(plugin.getDataFolder().getPath() + File.separator + path);
+        File langFile = new File(path);
         if (!langFile.exists()) {
             VinUtils.sendDebugMessage(0,"<yellow>Lang file "+langFile+" does not exist!");
             return langLines;
