@@ -3,6 +3,7 @@ package org.saintqd.vineriumlib;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.saintqd.vineriumlib.commands.VinLibCommandsManager;
 import org.saintqd.vineriumlib.listeners.GUIListener;
 import org.saintqd.vineriumlib.managers.LangManager;
 import org.saintqd.vineriumlib.managers.VaultManager;
@@ -26,6 +27,8 @@ public class VineriumLib extends JavaPlugin {
 
         this.debugLevel = 0;
         this.langManager = new LangManager();
+
+        VinLibCommandsManager.setupCommands(this);
 
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
 
@@ -51,6 +54,10 @@ public class VineriumLib extends JavaPlugin {
 
     private void setupDefaultConfig() {
 
+    }
+
+    public void setDebugLevel(int debugLevel) {
+        this.debugLevel = debugLevel;
     }
 
     public int getDebugLevel() {
