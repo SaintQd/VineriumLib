@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -11,11 +12,13 @@ public class VinGUI {
 
     private final Player player;
     private Inventory inventory;
+    private final HashMap<Integer, ItemStack> items;
     private final HashMap<Integer,VinGUIButton> buttons;
 
     public VinGUI(Player player) {
         this.player = player;
         this.inventory = null;
+        this.items = new HashMap<>();
         this.buttons = new HashMap<>();
     }
 
@@ -35,8 +38,12 @@ public class VinGUI {
         player.openInventory(inventory);
     }
 
-    public Inventory setInventory(Inventory inventory) {
-        return this.inventory = inventory;
+    public HashMap<Integer, ItemStack> getItems() {
+        return items;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
     public HashMap<Integer, VinGUIButton> getButtons() {

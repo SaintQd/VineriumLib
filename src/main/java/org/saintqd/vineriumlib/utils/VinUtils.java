@@ -6,16 +6,18 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.saintqd.vineriumlib.VineriumLib;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class VinUtils {
 
@@ -84,5 +86,15 @@ public class VinUtils {
 
     public static long getCurrentTick() {
         return System.currentTimeMillis() / 50;
+    }
+
+    public static List<Path> listFilesInFolder(String path) {
+        List<Path> fileList;
+        try (Stream<Path> filePaths = Files.walk(Paths.get(path))) {
+            fileList = filePaths.toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fileList;
     }
 }

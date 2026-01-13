@@ -1,0 +1,13 @@
+Lang:
+  not_enough_arguments: "<red>Недостаточно аргументов."
+  no_permission: "<red>Нет прав."
+  action_only_by_player: "<red>Данное действие может быть совершено только игроком."
+  reloadMessage: "<green>Плагин перезагружен."
+  custom_gui_price_money_true: "<gray>Стоимость: <green>{1}<dark_green>š"
+  custom_gui_price_money_false: "<gray>Стоимость: <red>{1}<dark_red>š"
+  custom_gui_purchase_check: "<light_purple>Нажмите, чтобы приобрести..."
+  custom_gui_purchase_check_deny: "<red>Требования для покупки не соблюдены."
+  custom_gui_purchase_success: "<green>Покупка успешно совершена."
+  give_leftovers: "<red>Недостаточно места в инвентаре, предметы были выброшены возле вас."
+  open_menu_command_does_not_exist: "<red>Меню <gold>{1} <red>не существует."
+  open_menu_command_for_player: "<green>Открыто меню <yellow>{1} <green>для игрока <light_purple>{2}<green>."

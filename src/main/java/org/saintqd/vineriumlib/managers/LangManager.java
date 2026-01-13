@@ -1,9 +1,11 @@
 package org.saintqd.vineriumlib.managers;
 
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.intellij.lang.annotations.Subst;
 import org.saintqd.vineriumlib.utils.VinUtils;
 
 import java.io.File;
@@ -11,22 +13,22 @@ import java.util.HashMap;
 
 public class LangManager {
 
-    HashMap<Plugin,HashMap<String,String>> langLinesPerPlugin;
+    private final HashMap<Key,String> langLines;
 
     public LangManager() {
-        this.langLinesPerPlugin = new HashMap<>();
+        this.langLines = new HashMap<>();
     }
 
-    public void registerLangLines(Plugin plugin, HashMap<String,String> langLines) {
-        langLinesPerPlugin.put(plugin,langLines);
+    public void registerLangLines(HashMap<Key,String> langLines) {
+        this.langLines.putAll(langLines);
     }
 
-    public HashMap<String,String> getLangLines(Plugin plugin) {
-        return langLinesPerPlugin.getOrDefault(plugin,new HashMap<>());
+    public HashMap<Key,String> getLangLines() {
+        return langLines;
     }
 
-    public HashMap<String,String> loadLanguageFile(String path) {
-        HashMap<String,String> langLines = new HashMap<>();
+    public HashMap<Key,String> loadLanguageFile(Plugin plugin, String path) {
+        HashMap<Key,String> langLines = new HashMap<>();
         File langFile = new File(path);
         if (!langFile.exists()) {
             VinUtils.sendDebugMessage(0,"<yellow>Lang file "+langFile+" does not exist!");
@@ -35,15 +37,28 @@ public class LangManager {
         YamlConfiguration langFileYaml = YamlConfiguration.loadConfiguration(langFile);
         ConfigurationSection langFileConfig = langFileYaml.getConfigurationSection("Lang");
         for (String identifier : langFileConfig.getKeys(false)) {
-            langLines.put(identifier,langFileConfig.getString(identifier));
+            @Subst("vineriumlib.value") String keyValue = identifier.toLowerCase();
+            Key langKey = Key.key(plugin,keyValue);
+            langLines.put(langKey,langFileConfig.getString(identifier));
         }
         return langLines;
     }
 
     public Component parseLangString(Plugin plugin, String identifier, String... args) {
-        if (!langLinesPerPlugin.getOrDefault(plugin,new HashMap<>()).containsKey(identifier))
+        @Subst("vineriumlib.value") String keyValue = identifier.toLowerCase();
+        Key key = Key.key(plugin,keyValue);
+        return parseLangString(key,identifier,args);
+    }
+
+    public Component parseLangString(Key key, String identifier, String... args) {
+        identifier = identifier.toLowerCase();
+        String line;
+        //if (langLinesPerPlugin.getOrDefault(plugin,new HashMap<>()).containsKey(identifier))
+        //    line = langLinesPerPlugin.getOrDefault(plugin,new HashMap<>()).get(identifier);
+        if (langLines.containsKey(key))
+            line = langLines.get(key);
+        else
             return VinUtils.parseString(identifier);
-        String line = langLinesPerPlugin.getOrDefault(plugin,new HashMap<>()).get(identifier);
         if (args.length == 0) VinUtils.parseString(line);
 
         int index = 1;

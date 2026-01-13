@@ -2,5 +2,12 @@ name: VineriumLib
 version: 1.0
 author: SaintQd
 main: org.saintqd.vineriumlib.VineriumLib
-api-version: 1.21.4
-softdepend: [Vault]
+api-version: 1.21.8
+softdepend:
+  - Vault
+  - PlaceholderAPI
+  - DiscordSRV
+permissions:
+  vineriumlib.admin:
+    description: Access to admin commands.
+    default: op

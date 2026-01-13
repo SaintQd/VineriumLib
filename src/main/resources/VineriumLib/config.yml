@@ -1,0 +1,3 @@
+Language: 'ru_ru'
+CustomGUI:
+  PurchaseSound: 'entity.player.levelup,1,2'
