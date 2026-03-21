@@ -1,6 +1,7 @@
 package org.saintqd.vineriumlib.commands;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
@@ -39,7 +40,7 @@ public class VinLibCommandsManager {
                                         changeDebugLevelCommand(ctx.getSource().getSender(),0);
                                         return Command.SINGLE_SUCCESS;
                                     })
-                                    .then(Commands.literal("level")
+                                    .then(Commands.argument("level", IntegerArgumentType.integer(0))
                                             .requires(predicate -> predicate.getSender().hasPermission("vineriumlib.admin"))
                                             .executes(ctx -> {
                                                 changeDebugLevelCommand(ctx.getSource().getSender(),ctx.getArgument("level", Integer.class));
@@ -48,7 +49,6 @@ public class VinLibCommandsManager {
                                     )
                             )
                             .then(Commands.literal("opengui")
-                                    .requires(predicate -> predicate.getSender() instanceof Player)
                                     .then(Commands.argument("name", ArgumentTypes.namespacedKey())
                                             .suggests((ctx,builder) -> {
                                                 String partName = builder.getInput().replace("/vinlib opengui ","");
@@ -95,18 +95,14 @@ public class VinLibCommandsManager {
     }
 
     private static void changeDebugLevelCommand(CommandSender sender, int level) {
-
         VineriumLib.inst().setDebugLevel(level);
         sender.sendMessage(VinUtils.parseString("<gray>Debug level set to <blue>"+level+"<gray>."));
     }
 
     private static void openCustomGUICommand(CommandSender sender, NamespacedKey menuKey, Player player) {
-        if (!(sender instanceof Player) && player == null) {
-            sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumLib.inst(),"action_only_by_player"));
-            return;
-        }
-        if (player == null)
-            player = (Player) sender;
+
+        player = VinUtils.checkForPlayerPresent(sender, player);
+
         if (!VineriumLib.inst().getCustomGUIManager().getGuiPaths().containsKey(menuKey)) {
             sender.sendMessage(VineriumLib.inst().getLangManager().parseLangString(VineriumLib.inst(),"open_menu_command_does_not_exist",menuKey.asString()));
             return;

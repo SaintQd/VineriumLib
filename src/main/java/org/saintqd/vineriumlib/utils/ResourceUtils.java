@@ -67,9 +67,17 @@ public class ResourceUtils {
             if (file.exists()) {
                 YamlConfiguration backupOutputYaml = YamlConfiguration.loadConfiguration(file);
                 YamlConfiguration resourceYaml = YamlConfiguration.loadConfiguration(resourceFile);
+                List<String> onceKeys = backupOutputYaml.getStringList("$onceKeys");
+                backupOutputYaml.set("$onceKeys", null);
+                for (String key : onceKeys) {
+                    if (resourceYaml.contains(key)) {
+                        backupOutputYaml.set(key,null);
+                    }
+                }
                 for (String key : backupOutputYaml.getKeys(true)) {
-                    if (!resourceYaml.contains(key))
-                        resourceYaml.set(key,backupOutputYaml.get(key));
+                    if (!resourceYaml.contains(key)) {
+                        resourceYaml.set(key, backupOutputYaml.get(key));
+                    }
                 }
                 resourceYaml.save(resourceFile);
                 file.delete();
