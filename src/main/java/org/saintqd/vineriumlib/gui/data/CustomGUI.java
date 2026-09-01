@@ -154,7 +154,7 @@ public class CustomGUI extends VinGUI {
                 ));
 
                 if (iconDisplayConfig.contains("ItemModel")) {
-                    guiItem.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.minecraft(iconDisplayConfig.getString("ItemModel")));
+                    guiItem.setData(DataComponentTypes.ITEM_MODEL, NamespacedKey.fromString(iconDisplayConfig.getString("ItemModel")));
 
                     if (iconDisplayConfig.contains("CustomModelData")) {
                         CustomModelData.Builder customModelData = CustomModelData.customModelData();

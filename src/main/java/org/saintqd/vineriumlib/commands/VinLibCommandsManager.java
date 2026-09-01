@@ -2,6 +2,7 @@ package org.saintqd.vineriumlib.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
@@ -14,6 +15,9 @@ import org.bukkit.plugin.Plugin;
 import org.saintqd.vineriumlib.VineriumLib;
 import org.saintqd.vineriumlib.gui.data.CustomGUI;
 import org.saintqd.vineriumlib.utils.VinUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class VinLibCommandsManager {
 
@@ -44,6 +48,20 @@ public class VinLibCommandsManager {
                                             .requires(predicate -> predicate.getSender().hasPermission("vineriumlib.admin"))
                                             .executes(ctx -> {
                                                 changeDebugLevelCommand(ctx.getSource().getSender(),ctx.getArgument("level", Integer.class));
+                                                return Command.SINGLE_SUCCESS;
+                                            })
+                                    )
+                            )
+                            .then(Commands.literal("debugcategories")
+                                    .requires(predicate -> predicate.getSender().hasPermission("vineriumlib.admin"))
+                                    .executes(ctx -> {
+                                        setDebugCategoriesCommand(ctx.getSource().getSender(),"");
+                                        return Command.SINGLE_SUCCESS;
+                                    })
+                                    .then(Commands.argument("categories", StringArgumentType.greedyString())
+                                            .requires(predicate -> predicate.getSender().hasPermission("vineriumlib.admin"))
+                                            .executes(ctx -> {
+                                                setDebugCategoriesCommand(ctx.getSource().getSender(),ctx.getArgument("categories", String.class));
                                                 return Command.SINGLE_SUCCESS;
                                             })
                                     )
@@ -96,7 +114,20 @@ public class VinLibCommandsManager {
 
     private static void changeDebugLevelCommand(CommandSender sender, int level) {
         VineriumLib.inst().setDebugLevel(level);
-        sender.sendMessage(VinUtils.parseString("<gray>Debug level set to <blue>"+level+"<gray>."));
+        sender.sendMessage(VinUtils.parseString("<gray>Debug level set to <blue>"+level+"</blue>."));
+    }
+
+    private static void setDebugCategoriesCommand(CommandSender sender, String categories) {
+        if (categories.isEmpty()) {
+            VineriumLib.inst().setDebugCategories(new HashSet<>());
+            sender.sendMessage(VinUtils.parseString("<gray>Debug categories cleared."));
+            return;
+        }
+        String[] categoriesArray = categories.split(",");
+        if (categoriesArray.length <= 1)
+            categoriesArray = categories.split(" ");
+        VineriumLib.inst().setDebugCategories(new HashSet<>(Arrays.asList(categoriesArray)));
+        sender.sendMessage(VinUtils.parseString("<gray>Debug categories set to <blue>"+String.join(", ",categoriesArray) +"</blue>."));
     }
 
     private static void openCustomGUICommand(CommandSender sender, NamespacedKey menuKey, Player player) {

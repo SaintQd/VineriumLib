@@ -8,10 +8,13 @@ import org.bukkit.plugin.Plugin;
 import org.intellij.lang.annotations.Subst;
 import org.saintqd.vineriumlib.utils.VinUtils;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.HashMap;
 
 public class LangManager {
+
+    public static final LangManager INSTANCE = new LangManager();
 
     private final HashMap<Key,String> langLines;
 
@@ -67,5 +70,14 @@ public class LangManager {
             index++;
         }
         return VinUtils.parseString(line);
+    }
+
+    public String getRawLangString(Plugin plugin, String identifier) {
+        @Subst("vineriumlib.value") String keyValue = identifier.toLowerCase();
+        Key key = Key.key(plugin,keyValue);
+        String line = langLines.get(key);
+        if (line != null)
+            return line;
+        else return identifier;
     }
 }

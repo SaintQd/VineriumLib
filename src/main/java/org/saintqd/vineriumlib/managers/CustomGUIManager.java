@@ -15,6 +15,8 @@ import java.util.List;
 
 public class CustomGUIManager {
 
+    public static final CustomGUIManager INSTANCE = new CustomGUIManager();
+
     private final HashMap<NamespacedKey,String> guiPaths = new HashMap<>();
 
     public void registerGuis(Plugin plugin) {

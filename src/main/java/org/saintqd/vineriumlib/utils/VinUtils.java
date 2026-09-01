@@ -8,6 +8,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.saintqd.vineriumlib.VineriumLib;
 
 import java.io.File;
@@ -15,8 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class VinUtils {
@@ -57,9 +57,16 @@ public class VinUtils {
         return components;
     }
 
-    public static void sendDebugMessage(int selectedDebugLevel, String message) {
+    public static void sendDebugMessage(int selectedDebugLevel, @NotNull String message) {
+        sendDebugMessage(selectedDebugLevel,new HashSet<>(),message);
+    }
+
+    public static void sendDebugMessage(int selectedDebugLevel, @NotNull Set<String> debugCategories, @NotNull String message) {
         int debugLevel = VineriumLib.inst().getDebugLevel();
+        Set<String> currentDebugCategories = VineriumLib.inst().getDebugCategories();
         if (debugLevel >= selectedDebugLevel) {
+            if (!debugCategories.isEmpty() && Collections.disjoint(currentDebugCategories, debugCategories))
+                return;
             VineriumLib.inst().getServer().getConsoleSender().sendMessage(VinUtils.parseString(
                     "<blue>["+VineriumLib.inst().getName()+" [Debug - Level "+ debugLevel + "/" + selectedDebugLevel + "] <gray>"+message));
         }
@@ -73,15 +80,6 @@ public class VinUtils {
         if (sender instanceof Player && player == null)
             return (Player) sender;
         return player;
-    }
-
-    public static NamespacedKey parseNamespace(String pair) {
-        if (pair.contains(":")) {
-            String[] keyData = pair.split(":");
-            return new NamespacedKey(keyData[0],keyData[1]);
-        }
-        else
-            return NamespacedKey.minecraft(pair);
     }
 
     public static long getCurrentTick() {

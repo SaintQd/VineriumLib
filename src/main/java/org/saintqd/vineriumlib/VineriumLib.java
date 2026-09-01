@@ -11,23 +11,27 @@ import org.saintqd.vineriumlib.listeners.GUIListener;
 import org.saintqd.vineriumlib.managers.CustomGUIManager;
 import org.saintqd.vineriumlib.managers.LangManager;
 import org.saintqd.vineriumlib.managers.VaultManager;
+import org.saintqd.vineriumlib.utils.MMAbilityData;
 import org.saintqd.vineriumlib.utils.ResourceUtils;
 import org.saintqd.vineriumlib.utils.VinUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VineriumLib extends JavaPlugin {
 
     private static VineriumLib plugin;
+
     private int debugLevel = 0;
-    private LangManager langManager = null;
-    private CustomGUIManager customGUIManager = null;
+    private Set<String> debugCategories = new HashSet<>();
 
     // Совместимость с другими плагинами
     private boolean placeholderAPIEnabled = false;
     private VaultManager vaultManager = null;
+    private boolean mythicMobsEnabled = false;
 
     @Override
     public void onLoad() {
@@ -43,8 +47,6 @@ public class VineriumLib extends JavaPlugin {
         }
 
         this.debugLevel = 0;
-        this.langManager = new LangManager();
-        this.customGUIManager = new CustomGUIManager();
 
         Plugin vaultPlugin = Bukkit.getPluginManager().getPlugin("Vault");
         if (vaultPlugin != null && vaultPlugin.isEnabled()) {
@@ -59,6 +61,14 @@ public class VineriumLib extends JavaPlugin {
         Plugin placeholderAPIPlugin = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
         if (placeholderAPIPlugin != null && placeholderAPIPlugin.isEnabled())
             placeholderAPIEnabled = true;
+
+        Plugin mythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs");
+        if (mythicMobs != null && mythicMobs.isEnabled()) {
+            mythicMobsEnabled = true;
+            VinUtils.sendDebugMessage(0,"MythicMobs found, compatibility features enabled.");
+
+            MMAbilityData.registerVirtualCaster();
+        }
 
         loadData();
 
@@ -97,12 +107,20 @@ public class VineriumLib extends JavaPlugin {
         return debugLevel;
     }
 
+    public void setDebugCategories(Set<String> debugCategories) {
+        this.debugCategories = debugCategories;
+    }
+
+    public Set<String> getDebugCategories() {
+        return debugCategories;
+    }
+
     public VaultManager getVaultManager() {
         return vaultManager;
     }
 
     public LangManager getLangManager() {
-        return langManager;
+        return LangManager.INSTANCE;
     }
 
     public boolean isPlaceholderAPIEnabled() {
@@ -110,6 +128,10 @@ public class VineriumLib extends JavaPlugin {
     }
 
     public CustomGUIManager getCustomGUIManager() {
-        return customGUIManager;
+        return CustomGUIManager.INSTANCE;
+    }
+
+    public boolean isMythicMobsEnabled() {
+        return mythicMobsEnabled;
     }
 }
